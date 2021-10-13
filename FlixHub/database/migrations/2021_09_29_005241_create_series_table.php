@@ -15,11 +15,12 @@ class CreateSeriesTable extends Migration
     {
         Schema::create('series', function (Blueprint $table) {
             $table->id()->autoIncrement();
-            $table->string('nome')->nullable();
+            $table->string('nome');
             $table->enum(
                 'status', 
                 ['assistido', 'não-assistido']
             )->default('não-assistido');
+
             $table->timestamps();
         });
     }

@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Serie;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class SeriesController extends Controller
 {
@@ -11,10 +13,12 @@ class SeriesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    
+    public function index(): Response
     {
-        return 'Listar todas as séries';
+        return response(Serie::all(), 200);
     }
+
 
     /**
      * Show the form for creating a new resource.
