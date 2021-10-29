@@ -1,20 +1,20 @@
 <template>
     <div class="seriesContainer">
         <div class="heading">
-            <h2 id="title">Séries</h2>
+            <h1 id="title">Séries</h1>
             <!-- @todo botão do formulário -->
         </div>
-        <list-view :series="series"/>
+        <table-series :series="series"/>
     </div>
 </template>
 
-<script>
+<script>tableSeries
 
-import listView from './listView'
+import tableSeries from './tableSeries'
 
 export default {
     components: {
-        listView
+        tableSeries
     },
     data: function() {
         return {
@@ -41,12 +41,14 @@ export default {
 
 <style scoped>
     .seriesContainer {
-        width: 50%;
-        margin: auto;
+        margin: 10px auto;
+        width: 60%;
+
     }
     .heading {
-        background: #e6e6e6;
-        padding: 10px;
+        border-radius: 10px;
+        padding: 20px;
+
     }
     #title {
         text-align: center;

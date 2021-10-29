@@ -14,6 +14,8 @@ Route::get('/v1/series', [SeriesController::class, 'index']);
 
 Route::prefix('/v1/serie')->group(function(){
     Route::post('/', [SeriesController::class, 'store']);
-    Route::put('/{id}', [SeriesController::class, 'update']);
+    Route::patch('/{id}', [SeriesController::class, 'update']);
+    Route::get('/{id}', [SeriesController::class, 'show']);
+    Route::put('/{id}/status', [SeriesController::class, 'status']);
     Route::delete('/{id}', [SeriesController::class, 'destroy']);
 });

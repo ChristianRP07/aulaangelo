@@ -40,4 +40,91 @@ class SerieTest extends TestCase
         $responseData = $response->getOriginalContent();
         $this->assertEquals(1, $responseData->count());
     }
+
+
+    public function test_series_create_new_serie()
+    {
+        $data = [
+            'nome' => 'nome-serie-criada', 
+            'status' => 'assistido'
+        ];
+        $response = $this->json('POST', '/api/v1/serie', $data);
+
+        $responseData = $response->getOriginalContent();
+        $response->assertStatus(201);
+        $this->assertEquals($data['nome'], $responseData['nome']);
+        $this->assertEquals($data['status'], $responseData['status']);
+    }
+
+    public function test_action_show_response_status_fail()
+    {
+        $response = $this->json('GET', '/api/v1/serie/1');
+        $response->assertStatus(404);
+    }
+
+    public function test_action_show_response_status_success()
+    {
+        $data = [
+            'nome' => 'nome-serie-criada', 
+            'status' => 'assistido'
+        ];
+        $response = $this->json('POST', '/api/v1/serie', $data);
+        $responseData = $response->getOriginalContent();
+        $this->assertEquals(1, $responseData['id']);
+
+        $response = $this->json('GET', '/api/v1/serie/1');
+        $response->assertStatus(200);
+    }
+
+    public function test_action_delete_serie()
+    {
+        $response = $this->json('DELETE', '/api/v1/serie/1');
+        $response->assertStatus(200);
+    }
+
+    public function test_action_delete_serie_fail()
+    {
+        $response = $this->json('DELETE', '/api/v1/serie');
+        $response->assertStatus(405);
+             
+    }
+
+    public function test_action_update_serie()
+    {
+        $data = [
+            'nome' => 'nome-serie-criada', 
+            'status' => 'assistido'
+        ];
+        $response = $this->json('POST', '/api/v1/serie', $data);
+        $responseData = $response->getOriginalContent();
+        $this->assertEquals(1, $responseData['id']);
+
+        
+       $data = [
+            'nome' => 'nome-serie-editada', 
+            'status' => 'não-assistido'
+        ];
+
+        $response = $this->json('PATCH', '/api/v1/serie/1', $data);
+                
+        $response->assertStatus(204);
+        
+        $this->assertNotEquals($data['nome'], $responseData['nome']);
+        $this->assertNotEquals($data['status'], $responseData['status']);      
+    }
+
+    public function test_action_update_serie_fail()
+    {
+        $response = $this->json('PATCH', '/api/v1/serie');
+        $response->assertStatus(405);
+             
+    }
+
+    public function test_action_status_serie_fail()
+    {
+        $response = $this->json('PUT', '/api/v1/serie');
+        $response->assertStatus(405);
+             
+    }
+    
 }
