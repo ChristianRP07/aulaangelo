@@ -3,126 +3,70 @@
 namespace App\Http\Controllers;
 
 use App\Models\Serie;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Http\Requests\StoreSerieRequest;
+use App\Http\Requests\UpdateSerieRequest;
 
 class SeriesController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    
+
     public function index(): Response
     {
-        return response(Serie::all(), 200);
+        return response(Serie::all(), Response::HTTP_OK);
     }
 
 
-    /**
-     * Cria novo registro de série no SGBD.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request): Response
+    public function store(StoreSerieRequest $request): Response
     {
-        $request->validate(['nome' => 'required|min:5']);
         $serieCadastrada = Serie::create($request->all());
-        return response($serieCadastrada, 201);
+        return response($serieCadastrada, Response::HTTP_CREATED);
     }
 
-    /**
-     * Exbe os dados de uma série específica.
-     *
-     * @param int $id
-     * @param \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-
-
-    public function show($id): Response
+    
+    public function show(int $id): Response
     {
-        $id = filter_var($id, FILTER_VALIDATE_INT);
-       if ($id === false) {
-           return response("Not found", 404);
-       }
-
+       
        $serie = Serie::findOrFail($id);
-       return response($serie, 200);
-
+       return response($serie, Response::HTTP_OK);
     }
 
-    /**
-     * Atualiza uma serie específica.
-     *
-     * @param int $id
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id): Response
+    
+    public function update(UpdateSerieRequest $request, int $id): Response
     {
-        $id = filter_var($id, FILTER_VALIDATE_INT);
-        if ($id === false) {
-            return response('Not found', 404);
-        }
-        $request->validate([
-            'nome' => 'min:5|string',
-            'status' => 'in:assistido,não-assistido'
-        ]);
-
         $serie = Serie::find($id);
         if (isset($request['nome'])) {
             $serie->nome = $request['nome'];
         }
+
         if (isset($request['status'])) {
             $serie->status = $request['status'];
         }
+
         $serie->save();
 
-        return response('No Content', 204);
+        return response('No Content', Response::HTTP_NO_CONTENT);
     }
 
-    /**
-     * Atualiza status da série no SGBD.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function status($id): Response
+   
+    public function status(int $id): Response
     {
-        $id = filter_var($id, FILTER_VALIDATE_INT);
-        if ($id === false) {
-            return response('Not Found', 404);
-        }
-
         $serie = Serie::find($id);
         if ($serie->status === 'não-assistido') {
             $serie->status = 'assistido';
-        } else {
+        }else{
             $serie->status = 'não-assistido';
         }
+
         $serie->save();
 
-        return response('No Content', 204);
+        return response('No Content', Response::HTTP_NO_CONTENT);
     }
 
-    /**
-     * Exclui uma série do SGBD.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id): Response
+    
+    public function destroy(int $id): Response
     {
-        $id = filter_var($id, FILTER_VALIDATE_INT);
-        if ($id === false) {
-            return response ('Not Found', 404);
-        }
-
         Serie::destroy($id);
 
-        return response('OK', 200);
+        return response('OK', Response::HTTP_OK);
     }
 }
