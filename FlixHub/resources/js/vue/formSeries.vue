@@ -1,12 +1,12 @@
 <template>
   <div class="row">
     <div class="col-auto">
-      <label for="titulo" class="form-label">Título: </label>
+      <label for="nome" class="form-label">Título: </label>
     </div>
     <div class="col-auto">
       <input
-        v-model="serie.titulo"
-        id="titulo"
+        v-model="serie.nome"
+        id="nome"
         placeholder="Digite o título da série"
         class="form-control"
         required
@@ -48,24 +48,20 @@
     </div>
 
     <div class="col-auto">
-      <button class="btn btn-primary" @click="cadastrarSerie()">
-        Cadastrar
+      <button class="btn btn-primary" @click="serie.id ? editarSerie() : cadastrarSerie()">
+        {{ serie.id ? 'Editar': 'Cadastrar' }}
       </button>
+      <button class="btn btn-danger" @click="cancelarEditar()" v-if="serie.id!=null">
+        Cancelar
+      </button>
+    
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  data: function () {
-    return {
-      serie: {
-        titulo: "",
-        categoria: "",
-        streaming: "",
-      }
-    }
-  },
+  props: ['serie'],
 
   methods: {
     cadastrarSerie() {
@@ -74,51 +70,86 @@ export default {
       }
 
       axios
-        .post("api/v1/serie", {
-          nome: this.serie.titulo,
+        .post('api/v1/serie/', {
+          nome: this.serie.nome,
           categoria: this.serie.categoria,
-          streaming: this.serie.streaming
+          streaming: this.serie.streaming,
         })
 
-        .then((response) => {
-          if (response.status == "201") {
-            this.serie.titulo = "";
+        .then(response => {
+          if (response.status == '201') {
+            this.serie.id = null;
+            this.serie.nome = '';
             this.serie.categoria = '';
             this.serie.streaming = '';
-            this.$emit("reloadlist");
+            this.$emit('reloadlist');
           }
         })
 
-        .catch((error) => {
+        .catch(error => {
           console.log(error);
         });
     },
 
+    editarSerie() {
+      if (this.existeCampoVazio() === true) {
+        return;
+      }
+      axios
+        .patch('api/v1/serie/'+ this.serie.id,{
+          nome: this.serie.nome,
+          categoria: this.serie.categoria,
+          streaming: this.serie.streaming,
+          status: this.serie.status,
+        })
+          
+        .then(response => {
+
+          if (response.status == '204') {
+            this.serie.id = null;
+            this.serie.nome = '';
+            this.serie.categoria = '';
+            this.serie.streaming = '';
+            this.$emit('reloadlist');
+          }
+        })
+
+        .catch(error => {
+          console.log(error);
+        });
+    },
+
+    cancelarEditar() {
+      this.serie.id=null;
+      this.serie.nome = '';
+      this.serie.categoria = '';
+      this.serie.streaming = '';
+      
+    },  
+
     existeCampoVazio() {
-            if (this.serie.titulo == '' 
-                || this.serie.categoria == '' 
-                || this.serie.streaming == ''
-            ) {
-                return true;
-            }
-            return false;
-    }
+      if (
+        this.serie.nome == '' ||
+        this.serie.categoria == '' ||
+        this.serie.streaming == ''
+      ) {
+        return true;
+      }
+      return false;
+    },
   },
 };
-
-
 </script>
 
 
 <style scoped>
-  label {
-    margin: 0;
-  }
+label {
+  margin: 0;
+}
 
-  .row {
-    align-items: center;
-    align-content: center;
-    margin-bottom: 0px;
-  }
-
+.row {
+  align-items: center;
+  align-content: center;
+  margin-bottom: 0px;
+}
 </style>

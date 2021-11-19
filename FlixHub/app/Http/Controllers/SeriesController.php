@@ -34,15 +34,11 @@ class SeriesController extends Controller
     public function update(UpdateSerieRequest $request, int $id): Response
     {
         $serie = Serie::find($id);
-        if (isset($request['nome'])) {
-            $serie->nome = $request['nome'];
-        }
-
-        if (isset($request['status'])) {
-            $serie->status = $request['status'];
-        }
-
-        $serie->save();
+        $serie->nome = $request['nome'];
+        $serie->status = $request['status'];
+        $serie->categoria = $request['categoria'];
+        $serie->streaming = $request['streaming'];
+        $serie->update();
 
         return response('No Content', Response::HTTP_NO_CONTENT);
     }
