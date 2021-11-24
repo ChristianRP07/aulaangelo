@@ -6,6 +6,7 @@ use App\Models\Serie;
 use Illuminate\Http\Response;
 use App\Http\Requests\StoreSerieRequest;
 use App\Http\Requests\UpdateSerieRequest;
+use App\Http\Requests\StatusSerieRequest;
 
 class SeriesController extends Controller
 {
@@ -44,7 +45,7 @@ class SeriesController extends Controller
     }
 
    
-    public function status(int $id): Response
+    public function status(StatusSerieRequest $request, int $id): Response
     {
         $serie = Serie::find($id);
         if ($serie->status === 'não-assistido') {

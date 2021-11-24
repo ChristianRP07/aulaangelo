@@ -26,6 +26,7 @@
         <option>Fantasia</option>
         <option>Ficção Científica</option>
         <option>Romance</option>
+        <option>Suspense</option>
         <option>Terror</option>
       </select>
     </div>
@@ -46,22 +47,29 @@
         <option>Netflix</option>
       </select>
     </div>
-
+    
     <div class="col-auto">
-      <button class="btn btn-primary" @click="serie.id ? editarSerie() : cadastrarSerie()">
-        {{ serie.id ? 'Editar': 'Cadastrar' }}
+      <button
+        class="btn btn-primary"
+        @click="serie.id ? editarSerie() : cadastrarSerie()"
+      >
+        {{ serie.id ? "Editar" : "Cadastrar" }}
       </button>
-      <button class="btn btn-danger" @click="cancelarEditar()" v-if="serie.id!=null">
+      <button
+        class="btn btn-danger"
+        @click="cancelarEditar()"
+        v-if="serie.id != null"
+      >
         Cancelar
       </button>
-    
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  props: ['serie'],
+  props: ["serie"],
+  
 
   methods: {
     cadastrarSerie() {
@@ -70,23 +78,23 @@ export default {
       }
 
       axios
-        .post('api/v1/serie/', {
+        .post("api/v1/serie/", {
           nome: this.serie.nome,
           categoria: this.serie.categoria,
           streaming: this.serie.streaming,
         })
-
-        .then(response => {
-          if (response.status == '201') {
+       
+        .then((response) => {
+          if (response.status == "201") {
             this.serie.id = null;
-            this.serie.nome = '';
-            this.serie.categoria = '';
-            this.serie.streaming = '';
-            this.$emit('reloadlist');
+            this.serie.nome = "";
+            this.serie.categoria = "";
+            this.serie.streaming = "";
+            this.$emit("reloadlist");
           }
         })
 
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
         });
     },
@@ -96,42 +104,40 @@ export default {
         return;
       }
       axios
-        .patch('api/v1/serie/'+ this.serie.id,{
+        .patch("api/v1/serie/" + this.serie.id, {
           nome: this.serie.nome,
           categoria: this.serie.categoria,
           streaming: this.serie.streaming,
           status: this.serie.status,
         })
-          
-        .then(response => {
 
-          if (response.status == '204') {
+        .then((response) => {
+          if (response.status == "204") {
             this.serie.id = null;
-            this.serie.nome = '';
-            this.serie.categoria = '';
-            this.serie.streaming = '';
-            this.$emit('reloadlist');
+            this.serie.nome = "";
+            this.serie.categoria = "";
+            this.serie.streaming = "";
+            this.$emit("reloadlist");
           }
         })
 
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
         });
     },
 
     cancelarEditar() {
-      this.serie.id=null;
-      this.serie.nome = '';
-      this.serie.categoria = '';
-      this.serie.streaming = '';
-      
-    },  
+      this.serie.id = null;
+      this.serie.nome = "";
+      this.serie.categoria = "";
+      this.serie.streaming = "";
+    },
 
     existeCampoVazio() {
       if (
-        this.serie.nome == '' ||
-        this.serie.categoria == '' ||
-        this.serie.streaming == ''
+        this.serie.nome == "" ||
+        this.serie.categoria == "" ||
+        this.serie.streaming == ""
       ) {
         return true;
       }

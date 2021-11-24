@@ -1,5 +1,5 @@
 <template>
-  <div>
+<div>
     <table class="table table-hover">
       <thead>
         <tr>
@@ -20,23 +20,56 @@
           <td>{{ serie.status }}</td>
           <td>
             <i class="bi bi-pencil-square" @click="editar(serie.id)"></i>
-            <i class="bi bi-trash"></i>
-            <i class="bi bi-check2-square"></i>
+            <i class="bi bi-trash" @click="remover(serie.id)"></i>
+            <i class="bi bi-check2-square" @click="status(serie.id)"></i>
           </td>
         </tr>
       </tbody>
     </table>
+    
   </div>
 </template>
 
 
 <script>
 export default {
-  props: ['series'],
-  
+  props: ["series"],
+
   methods: {
     editar(id) {
-      this.$emit('editarserie', id);
+      this.$emit("editarserie", id);
+    },
+    status(id) {
+               
+      axios
+        .put("api/v1/serie/status/" + id)
+
+        .then((response) => {
+          if (response.status == "204") {
+            this.$emit("reloadlist");
+          }
+        })
+
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    
+    remover(id) {
+      if(confirm("Deseja excluir essa série?")){
+
+      axios
+          .delete("api/v1/serie/" + id)
+
+          .then((response) => {
+              this.$emit("reloadlist");
+            
+          })
+
+          .catch((error) => {
+            console.log(error);
+          });
+      }
     },
   },
 };

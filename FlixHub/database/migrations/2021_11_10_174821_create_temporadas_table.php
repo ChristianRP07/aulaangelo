@@ -17,6 +17,7 @@ class CreateTemporadasTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('serie_id');
             $table->string('nome');
+            $table->integer('quant_temp');
             $table->timestamps();
 
             $table->foreign('serie_id')->references('id')->on('series');

@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreSerieRequest extends FormRequest
+class StatusSerieRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -14,7 +14,7 @@ class StoreSerieRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nome' => 'required|min:3'
+            'status' => 'in:assistido,não-assistido'
         ];
     }
 }
