@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Temporadas;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreSerieRequest extends FormRequest
+class UpdateTemporadaRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -14,7 +14,8 @@ class StoreSerieRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nome' => 'required|min:3'
+            'quant_temp' => 'min:1|integer',
+            
         ];
     }
 }

@@ -1,5 +1,5 @@
 <template>
-<div>
+  <div>
     <table class="table table-hover">
       <thead>
         <tr>
@@ -26,21 +26,19 @@
         </tr>
       </tbody>
     </table>
-    
   </div>
 </template>
 
 
 <script>
 export default {
-  props: ["series"],
+  props: ["series", "temporadas"],
 
   methods: {
     editar(id) {
       this.$emit("editarserie", id);
     },
     status(id) {
-               
       axios
         .put("api/v1/serie/status/" + id)
 
@@ -54,16 +52,29 @@ export default {
           console.log(error);
         });
     },
-    
-    remover(id) {
-      if(confirm("Deseja excluir essa série?")){
 
-      axios
+    remover(id) {
+      if (confirm("Deseja excluir essa série juntamente com suas temporadas e episódios?")) {
+        axios
           .delete("api/v1/serie/" + id)
 
           .then((response) => {
-              this.$emit("reloadlist");
-            
+            axios
+              .delete("api/v1/temporada/" + id)
+
+              .then((response) => {
+                axios                
+                  .delete("api/v1/episodio/" + id)
+
+                  .then ((response) =>{
+                    this.$emit("reloadlist");
+
+              })
+              })
+
+              .catch((error) => {
+                console.log(error);
+              });
           })
 
           .catch((error) => {

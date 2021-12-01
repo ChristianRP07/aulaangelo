@@ -1,35 +1,35 @@
 <template>
-  <div class="row" v-if="temporada.id != null">
+  <div class="row" v-if="episodio.id != null">
     <div class="col-auto">
       <label for="nome" class="form-label">Título: </label>
     </div>
     <div class="col-auto">
       <input
-        v-model="temporada.nome"
+        v-model="episodio.nome"
         id="nome"
         placeholder="Título da série"
         class="form-control"
-        required
+        disabled
       />
     </div>
 
     <div class="col-auto">
-      <label for="quant_temp" class="form-label"
-        >Quantidade de Temporadas:
+      <label for="quant_ep" class="form-label"
+        >Quantidade de Episodios:
       </label>
     </div>
     <div class="col-auto">
       <input
-        v-model="temporada.quant_temp"
-        id="quant_temp"
-        placeholder="Temporadas"
+        v-model="episodio.quant_ep"
+        id="quant_ep"
+        placeholder="Episodios"
         class="form-control"
         required
       />
     </div>
 
     <div class="col-auto">
-      <button class="btn btn-primary" @click="editarTemp()">Editar</button>
+      <button class="btn btn-primary" @click="editarEp()">Editar</button>
       <button class="btn btn-danger" @click="cancelarEditar()">Cancelar</button>
     </div>
   </div>
@@ -37,23 +37,20 @@
 
 <script>
 export default {
-  props: ["temporada"],
+  props: ["episodio"],
 
   methods: {
-    editarTemp() {
-      if (this.existeCampoVazio() === true) {
-        return;
-      }
+    editarEp() {      
       axios
-        .patch("api/v1/temporadas/" + this.temporada.id, {
-          quant_temp: this.temporada.quant_temp,
+        .patch("api/v1/episodio/" + this.episodio.id, {
+          quant_ep: this.episodio.quant_ep,
         })
 
         .then((response) => {
           if (response.status == "204") {
-            this.temporada.id = null;
-            this.temporada.nome = "";
-            this.temporada.quant_temp = "";
+            this.episodio.id = null;
+            this.episodio.nome = "";
+            this.episodio.quant_ep = "";
             this.$emit("reloadlist");
           }
         })
@@ -64,9 +61,9 @@ export default {
     },
 
     cancelarEditar() {
-      this.temporada.id = null;
-      this.temporada.nome = "";
-      this.temporada.quant_temp = "";
+      this.episodio.id = null;
+      this.episodio.nome = "";
+      this.episodio.quant_ep = "";
     },
   },
 };

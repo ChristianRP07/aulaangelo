@@ -1,9 +1,11 @@
 <?php
 
-use App\Http\Controllers\SeriesController;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\SeriesController;
 use App\Http\Controllers\TemporadasController;
+use App\Http\Controllers\EpisodiosController;
 
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
@@ -29,4 +31,13 @@ Route::prefix('/v1/temporada')->group(function () {
     Route::get('/{id}', [TemporadasController::class, 'show']);
     Route::patch('/{id}', [TemporadasController::class, 'update']);
     Route::delete('/{id}', [TemporadasController::class, 'destroy']);
+});
+
+Route::get('/v1/episodios', [EpisodiosController::class, 'index']);
+
+Route::prefix('/v1/episodio')->group(function () {
+    Route::post('/', [EpisodiosController::class, 'store']);
+    Route::get('/{id}', [EpisodiosController::class, 'show']);
+    Route::patch('/{id}', [EpisodiosController::class, 'update']);
+    Route::delete('/{id}', [EpisodiosController::class, 'destroy']);
 });

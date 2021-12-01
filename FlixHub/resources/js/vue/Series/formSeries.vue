@@ -47,7 +47,37 @@
         <option>Netflix</option>
       </select>
     </div>
-    
+
+    <div class="col-auto" v-if="serie.id == null">
+      <label for="quant_temp" class="form-label"
+        >Quantidade de Temporadas:
+      </label>
+    </div>
+    <div class="col-auto" v-if="serie.id == null">
+      <input
+        v-model="temporada.quant"
+        id="temporadas"
+        placeholder="Quantidade de Temporadas"
+        class="form-control"
+        required
+      />
+    </div>
+
+    <div class="col-auto" v-if="serie.id == null">
+      <label for="quant_temp" class="form-label"
+        >Quantidade de Episodios:
+      </label>
+    </div>
+    <div class="col-auto" v-if="serie.id == null">
+      <input
+        v-model="episodio.quant"
+        id="temporadas"
+        placeholder="Quantidade de Episodios"
+        class="form-control"
+        required
+      />
+    </div>
+
     <div class="col-auto">
       <button
         class="btn btn-primary"
@@ -68,29 +98,59 @@
 
 <script>
 export default {
-  props: ["serie"],
-  
+  props: ["serie", "temporada", "episodio"],
 
   methods: {
     cadastrarSerie() {
       if (this.existeCampoVazio() === true) {
         return;
       }
-
       axios
         .post("api/v1/serie/", {
           nome: this.serie.nome,
           categoria: this.serie.categoria,
           streaming: this.serie.streaming,
         })
-       
+
         .then((response) => {
           if (response.status == "201") {
-            this.serie.id = null;
-            this.serie.nome = "";
-            this.serie.categoria = "";
-            this.serie.streaming = "";
+            axios
+              .post("api/v1/temporada/", {
+                nome: this.serie.nome,
+                serie_id: response.data.id,
+                quant_temp: this.temporada.quant,
+              })
+
+              .then((response) => {
+                axios
+                  .post("api/v1/episodio/", {
+                    nome: this.serie.nome,
+                    temporada_id: response.data.id,
+                    quant_ep: this.episodio.quant, 
+                  })
+                  .then((response) => {
+                    if (response.status == "201") {                  
+                      this.serie.id = null;
+                      this.temporada.id = null;
+                      this.episodio.id = null;
+                      this.serie.nome = "";
+                      this.serie.categoria = "";
+                      this.serie.streaming = "";
+                      this.temporada.quant = "";
+                      this.episodio.quant = "";
+                      this.$emit("reloadlist");
+                    }
+                  })
+                  .catch(error => {
+                    console.log(error);
+                  })
+              })
+              .catch((error) => {                
+                console.log(error);
+              });
+
             this.$emit("reloadlist");
+            
           }
         })
 
@@ -100,9 +160,6 @@ export default {
     },
 
     editarSerie() {
-      if (this.existeCampoVazio() === true) {
-        return;
-      }
       axios
         .patch("api/v1/serie/" + this.serie.id, {
           nome: this.serie.nome,
@@ -137,7 +194,9 @@ export default {
       if (
         this.serie.nome == "" ||
         this.serie.categoria == "" ||
-        this.serie.streaming == ""
+        this.serie.streaming == "" ||
+        this.temporada.quant_temp == "" ||
+        this.episodio.quant_ep == ""
       ) {
         return true;
       }

@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Temporada;
 use Illuminate\Http\Response;
-use App\Http\Requests\StoreTemporadaRequest;
-use App\Http\Requests\UpdateTemporadaRequest;
+use App\Http\Requests\Temporadas\StoreTemporadaRequest;
+use App\Http\Requests\Temporadas\UpdateTemporadaRequest;
 
 class TemporadasController extends Controller
 {
@@ -22,7 +22,7 @@ class TemporadasController extends Controller
 
     public function show(int $id): Response
     {
-       $temporada = Temporadas::findOrFail($id);
+       $temporada = Temporada::findOrFail($id);
        return response($temporada, Response::HTTP_OK);
     }
 

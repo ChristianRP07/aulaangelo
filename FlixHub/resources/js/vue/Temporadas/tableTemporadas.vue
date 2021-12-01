@@ -10,13 +10,13 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(temporada, index) in temporadas" :key="index">
+        <tr v-for="(temporadas, index) in temporadas" :key="index">
           <th scope="row">{{ temporadas.id }}</th>
           <td>{{ temporadas.nome }}</td>
           <td>{{ temporadas.quant_temp }}</td>
         <td>
-            <i class="bi bi-pencil-square" @click="editarTemp(temporada.id)"></i>
-            <i class="bi bi-trash"></i>
+            <i class="bi bi-pencil-square" @click="editarTemp(temporadas.id)"></i>
+            <i class="bi bi-trash" @click="removerTemp(temporadas.id)"></i>
         </td>
         </tr>
       </tbody>
@@ -34,20 +34,30 @@ export default {
       this.$emit('editartemporada', id);
     },
     
-    remover(id){
+    removerTemp(id){
+      if (confirm("Deseja excluir essa temporada juntamente com seus episódios?")) {
       axios
         .delete('api/v1/temporada/' +id)
           
-        .then(response => {
-          if (response.status == '204') {
-            this.$emit('reloadlist');
-            
-          }
-        })
+        .then((response) => {
+            axios
+              .delete("api/v1/episodio/" + id)
+
+              .then((response) => {
+                
+                this.$emit("reloadlist");
+                
+              })
+
+              .catch((error) => {
+                console.log(error);
+              });
+          })
 
         .catch(error => {
           console.log(error);
         });
+      }
     },
   },
 };
